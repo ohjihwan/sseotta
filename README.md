@@ -1,11 +1,14 @@
-# AI 소비 분석 & 자동 리포트 웹앱 요구사항 정의서
+# 썼다AI - AI 소비 분석 & 자동 리포트 웹앱 요구사항 정의서
 
 ## 1. 프로젝트 개요
 
-### 1.1 프로젝트 목적
+### 1.1 프로젝트 명칭
+**썼다AI** (SSEOTTA AI)
+
+### 1.2 프로젝트 목적
 사용자의 소비 데이터를 다양한 방식으로 입력받아 AI가 자동으로 카테고리를 분류하고, 소비 패턴을 분석하여 월간 리포트를 생성하는 웹 애플리케이션 개발
 
-### 1.2 핵심 가치
+### 1.3 핵심 가치
 - 수동 가계부 작성의 번거로움 제거
 - AI 기반 자동 카테고리 분류로 정확성 향상
 - 소비 패턴 인사이트 제공으로 재정 관리 개선
@@ -199,6 +202,40 @@
 
 ---
 
+## 4.6 프로젝트 디렉터리 구조
+
+```
+sseotta-ai/
+├─ backend/
+│   ├─ app/
+│   │   ├─ main.py
+│   │   ├─ routers/
+│   │   ├─ models/
+│   │   ├─ services/
+│   │   └─ db.py
+│   ├─ requirements.txt
+│   └─ README.md
+├─ frontend/
+│   ├─ index.html
+│   ├─ app.js
+│   └─ styles.css
+└─ README.md
+```
+
+**디렉터리 설명**:
+- `backend/`: FastAPI 백엔드 서버
+  - `app/main.py`: FastAPI 애플리케이션 진입점
+  - `app/routers/`: API 라우터 모듈
+  - `app/models/`: 데이터 모델 정의
+  - `app/services/`: 비즈니스 로직 서비스
+  - `app/db.py`: 데이터베이스 연결 설정
+- `frontend/`: Vanilla JavaScript 프론트엔드
+  - `index.html`: 메인 HTML 파일
+  - `app.js`: JavaScript 애플리케이션 로직
+  - `styles.css`: 스타일시트
+
+---
+
 ## 5. 데이터베이스 스키마 (MongoDB 기준)
 
 ### 5.1 Collections
@@ -349,6 +386,6 @@
 
 ## 문서 버전
 - **작성일**: 2025-11-17
-- **버전**: 1.0
+- **버전**: 1.1
 - **작성자**: AI Assistant
-- **최종 수정**: 2025-11-17
+- **최종 수정**: 2025-12-07
