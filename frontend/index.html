@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>썼다AI - AI 소비 분석</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">썼다AI</h1>
+                <div class="header-right">
+                    <nav class="nav">
+                        <button class="nav-btn active" data-tab="input">입력</button>
+                        <button class="nav-btn" data-tab="transactions">거래내역</button>
+                        <button class="nav-btn" data-tab="report">리포트</button>
+                    </nav>
+                    <div class="auth-buttons" id="auth-buttons">
+                        <button class="btn btn-outline" id="login-btn">로그인</button>
+                        <button class="btn btn-outline" id="signup-btn">회원가입</button>
+                    </div>
+                    <div class="user-menu" id="user-menu" style="display: none;">
+                        <span class="user-name" id="user-name"></span>
+                        <button class="btn btn-outline" id="logout-btn">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main">
+        <div class="container">
+            <!-- 입력 섹션 -->
+            <section id="input-section" class="tab-content active">
+                <div class="section-header">
+                    <h2>소비 내역 입력</h2>
+                    <p class="subtitle">텍스트, 이미지, 파일 중 원하는 방식으로 입력하세요</p>
+                </div>
+
+                <!-- 입력 방식 탭 -->
+                <div class="input-tabs">
+                    <button class="input-tab-btn active" data-input-type="text">텍스트 입력</button>
+                    <button class="input-tab-btn" data-input-type="image">이미지 업로드</button>
+                    <button class="input-tab-btn" data-input-type="file">파일 업로드</button>
+                </div>
+
+                <!-- 텍스트 입력 폼 -->
+                <div id="text-input-form" class="input-form active">
+                    <div class="form-group">
+                        <label for="text-input">소비 내역을 자연어로 입력하세요</label>
+                        <textarea 
+                            id="text-input" 
+                            class="form-control" 
+                            rows="4" 
+                            placeholder="예: 스타벅스 아메리카노 4500원&#10;예: 2024년 11월 15일 택시비 12000원"
+                        ></textarea>
+                    </div>
+                    <button id="submit-text-btn" class="btn btn-primary">
+                        <span class="btn-text">분석하기</span>
+                        <span class="btn-loader" style="display: none;">처리 중...</span>
+                    </button>
+                </div>
+
+                <!-- 이미지 업로드 폼 -->
+                <div id="image-input-form" class="input-form">
+                    <div class="form-group">
+                        <label for="image-input">영수증 사진을 업로드하세요</label>
+                        <div class="file-upload-area" id="image-upload-area">
+                            <input type="file" id="image-input" accept="image/jpeg,image/png,image/heic" style="display: none;">
+                            <div class="upload-placeholder">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <p>클릭하거나 드래그하여 이미지를 업로드</p>
+                                <p class="file-hint">JPG, PNG, HEIC 지원</p>
+                            </div>
+                            <div class="upload-preview" style="display: none;">
+                                <img id="image-preview" src="" alt="미리보기">
+                                <button class="remove-file-btn" id="remove-image-btn">×</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="submit-image-btn" class="btn btn-primary" disabled>
+                        <span class="btn-text">OCR 분석하기</span>
+                        <span class="btn-loader" style="display: none;">처리 중...</span>
+                    </button>
+                </div>
+
+                <!-- 파일 업로드 폼 -->
+                <div id="file-input-form" class="input-form">
+                    <div class="form-group">
+                        <label for="file-input">CSV/Excel 파일을 업로드하세요</label>
+                        <div class="file-upload-area" id="file-upload-area">
+                            <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display: none;">
+                            <div class="upload-placeholder">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <p>클릭하거나 드래그하여 파일을 업로드</p>
+                                <p class="file-hint">CSV, XLSX, XLS 지원</p>
+                            </div>
+                            <div class="upload-preview" style="display: none;">
+                                <div class="file-info">
+                                    <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    <div>
+                                        <p id="file-name" class="file-name"></p>
+                                        <p id="file-size" class="file-size"></p>
+                                    </div>
+                                </div>
+                                <button class="remove-file-btn" id="remove-file-btn">×</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="submit-file-btn" class="btn btn-primary" disabled>
+                        <span class="btn-text">일괄 분석하기</span>
+                        <span class="btn-loader" style="display: none;">처리 중...</span>
+                    </button>
+                </div>
+
+                <!-- 입력 결과 알림 -->
+                <div id="input-result" class="result-message" style="display: none;"></div>
+            </section>
+
+            <!-- 거래내역 섹션 -->
+            <section id="transactions-section" class="tab-content">
+                <div class="section-header">
+                    <h2>거래 내역</h2>
+                    <div class="section-actions">
+                        <select id="month-filter" class="form-control filter-select">
+                            <option value="">전체</option>
+                        </select>
+                        <select id="category-filter" class="form-control filter-select">
+                            <option value="">전체 카테고리</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 통계 카드 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">이번 달 총 지출</div>
+                        <div class="stat-value" id="total-spending">0원</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">거래 건수</div>
+                        <div class="stat-value" id="transaction-count">0건</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">평균 일일 지출</div>
+                        <div class="stat-value" id="daily-average">0원</div>
+                    </div>
+                </div>
+
+                <!-- 거래내역 테이블 -->
+                <div class="table-container">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>날짜</th>
+                                <th>금액</th>
+                                <th>카테고리</th>
+                                <th>설명</th>
+                                <th>거래처</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-tbody">
+                            <tr class="empty-row">
+                                <td colspan="6">거래 내역이 없습니다. 소비 내역을 입력해주세요.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 리포트 섹션 -->
+            <section id="report-section" class="tab-content">
+                <div class="section-header">
+                    <h2>월간 리포트</h2>
+                    <div class="section-actions">
+                        <select id="report-month-select" class="form-control filter-select">
+                        </select>
+                        <button id="generate-report-btn" class="btn btn-secondary">리포트 생성</button>
+                    </div>
+                </div>
+
+                <!-- 리포트 컨텐츠 -->
+                <div id="report-content" class="report-content">
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <p>리포트를 생성하려면 월을 선택하고 '리포트 생성' 버튼을 클릭하세요.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 모달 (거래 수정/삭제) -->
+    <div id="transaction-modal" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>거래 수정</h3>
+                <button class="modal-close-btn" id="close-modal-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-transaction-form">
+                    <div class="form-group">
+                        <label for="edit-date">날짜</label>
+                        <input type="date" id="edit-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-amount">금액</label>
+                        <input type="number" id="edit-amount" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-category">카테고리</label>
+                        <select id="edit-category" class="form-control" required>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-description">설명</label>
+                        <input type="text" id="edit-description" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-merchant">거래처</label>
+                        <input type="text" id="edit-merchant" class="form-control">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-danger" id="delete-transaction-btn">삭제</button>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>처리 중...</p>
+    </div>
+
+    <!-- 로그인 모달 -->
+    <div id="login-modal" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>로그인</h3>
+                <button class="modal-close-btn" id="close-login-modal-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">이메일</label>
+                        <input type="email" id="login-email" class="form-control" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">비밀번호</label>
+                        <input type="password" id="login-password" class="form-control" required placeholder="비밀번호를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="remember-me">
+                            <span>로그인 상태 유지</span>
+                        </label>
+                    </div>
+                    <div id="login-result" class="result-message" style="display: none; margin-bottom: 1rem;"></div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">로그인</button>
+                    </div>
+                    <div class="auth-switch">
+                        <p>계정이 없으신가요? <a href="#" id="switch-to-signup">회원가입</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div id="signup-modal" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>회원가입</h3>
+                <button class="modal-close-btn" id="close-signup-modal-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">이름</label>
+                        <input type="text" id="signup-name" class="form-control" required placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">이메일</label>
+                        <input type="email" id="signup-email" class="form-control" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">비밀번호</label>
+                        <input type="password" id="signup-password" class="form-control" required placeholder="비밀번호를 입력하세요" minlength="8">
+                        <small class="form-hint">8자 이상 입력해주세요</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password-confirm">비밀번호 확인</label>
+                        <input type="password" id="signup-password-confirm" class="form-control" required placeholder="비밀번호를 다시 입력하세요">
+                    </div>
+                    <div id="signup-result" class="result-message" style="display: none; margin-bottom: 1rem;"></div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">회원가입</button>
+                    </div>
+                    <div class="auth-switch">
+                        <p>이미 계정이 있으신가요? <a href="#" id="switch-to-login">로그인</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
